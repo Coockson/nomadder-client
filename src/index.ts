@@ -39,7 +39,7 @@ export function connectToServer(serverURL?: string){
 export function listenBatch(){
     // Wait for batch protocol
     wsc.addEventListener("message", ( message) => {
-        var msg: INomadderEvent = JSON.parse(message as unknown as string) ; 
+        var msg: INomadderEvent = JSON.parse(message.data as unknown as string) ; 
         // Ensure right protocol
         if (msg.protocol !== "NOMADDER") {
             return;
