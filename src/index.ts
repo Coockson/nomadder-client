@@ -63,6 +63,7 @@ export function saveBatchData(data: IServerData){
     local_data.data.push(data.data);
     data.schemaDefinition.forEach( (schema) =>{ //add unique schema values
         console.log(schema.name);
+        //@ts-ignore
         if (local_data.schemaDefinition.findIndex(x => x.name==schema.name) === -1 ){
             local_data.schemaDefinition.push(schema);
         }
