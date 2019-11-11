@@ -50,21 +50,21 @@ export function connectToServer(serverURL?: string) {
 
 export function listenBatch() {
     // Wait for batch protocol
-    wsc.addEventListener("message", (message) => {
-        console.log("hello")
-        var msg: INomadderEvent = JSON.parse(message.data as unknown as string);
-        // Ensure right protocol
-        if (msg.protocol !== "NOMADDER") {
-            return;
-        }
-        // Verify correct event format
-        if (!msg.protocolInformation.event) {
-            return;
-        }
-        if (msg.protocolInformation.event == EventTypes.BATCH) {
-            saveBatchData(msg.protocolInformation.payload.data)
-        }
-    });
+    // wsc.addEventListener("message", (message) => {
+    //     console.log("hello")
+    //     var msg: INomadderEvent = JSON.parse(message.data as unknown as string);
+    //     // Ensure right protocol
+    //     if (msg.protocol !== "NOMADDER") {
+    //         return;
+    //     }
+    //     // Verify correct event format
+    //     if (!msg.protocolInformation.event) {
+    //         return;
+    //     }
+    //     if (msg.protocolInformation.event == EventTypes.BATCH) {
+    //         saveBatchData(msg.protocolInformation.payload.data)
+    //     }
+    // });
 }
 
 export function saveBatchData(data: IServerData) {
@@ -83,8 +83,6 @@ export function saveBatchData(data: IServerData) {
     });
     localStorage.removeItem(nomadder_key);                          // delete old data  
     localStorage.setItem(nomadder_key, JSON.stringify(local_data)); // add updated data
-
-
 }
 
 export function JSONToSYNCPackage(data: JSON) {
