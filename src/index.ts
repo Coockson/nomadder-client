@@ -1,45 +1,58 @@
 //Imports
-import { INomadderEvent, EventTypes } from "./models/nomadder-event.model";
+import { INomadderEvent, EventTypes, NOMADDER_PROTOCOL } from "./models/nomadder-event.model";
 import { IServerData } from "./models/server-data.model";
-
+import { IProtocolPayload } from './models/protocol-information.model';
+import { ISyncEventPayload } from './models/sync-event-payload.model';
 
 //Global vars
 let wsc: WebSocket;
-const nomadder_key: string= "NOMADDER-DATA";
+const nomadder_key: string = "NOMADDER-DATA";
 
-export function initializeSocket(serverURL?: string){
-    if (serverURL){
+export function initializeSocket(serverURL?: string) {
+    if (serverURL) {
         //Setup connection with the server
-        var ws = new WebSocket( serverURL );
+        var ws = new WebSocket(serverURL);
         return ws
     }
-    else{
+    else {
         var ws = new WebSocket("ws://localhost:8080");
         return ws
-    }    
+    }
 }
 
-export function getLocalData(){ 
-    var data= localStorage.getItem(nomadder_key);
+export function getLocalData() {
+    var data = localStorage.getItem(nomadder_key);
     return data
 }
 
-export function connectToServer(serverURL?: string){
+export function connectToServer(serverURL?: string) {
 
-    wsc = initializeSocket(serverURL); 
-  
+    wsc = initializeSocket(serverURL);
+
     var data = getLocalData();
-    if (data === null){
+    if (data === null) {
         console.log("No data initiated on client");
-    } else{
-        wsc.onopen = () => wsc.send(<string>data);
-    }  
-}  
+    }
+    const nommadder_sync: INomadderEvent = {
+        protocol: NOMADDER_PROTOCOL,
+        protocolInformation:
+        {
+            event: EventTypes.SYNC,
+            payload: {
+            }
+        },
+        hash: "this is a hash"
+    }
 
-export function listenBatch(){
+    wsc.onopen = () => wsc.send(JSON.stringify(nommadder_sync));
+
+}
+
+export function listenBatch() {
     // Wait for batch protocol
-    wsc.addEventListener("message", ( message) => {
-        var msg: INomadderEvent = JSON.parse(message.data as unknown as string) ; 
+    wsc.addEventListener("message", (message) => {
+        console.log("hello")
+        var msg: INomadderEvent = JSON.parse(message.data as unknown as string);
         // Ensure right protocol
         if (msg.protocol !== "NOMADDER") {
             return;
@@ -51,20 +64,20 @@ export function listenBatch(){
         if (msg.protocolInformation.event == EventTypes.BATCH) {
             saveBatchData(msg.protocolInformation.payload.data)
         }
-    }); 
+    });
 }
 
-export function saveBatchData(data: IServerData){
+export function saveBatchData(data: IServerData) {
     var local_storage = getLocalData();
     var local_json = JSON.parse(<string>local_storage); //for now assuming there is data
     //var serverID = data.serverId; required when multi server is added
     var local_data = local_json.protocolInformation.payload.data;
     //console.log(local_data);
     local_data.data.push(data.data);
-    data.schemaDefinition.forEach( (schema) =>{ //add unique schema values
+    data.schemaDefinition.forEach((schema) => { //add unique schema values
         console.log(schema.name);
         //@ts-ignore
-        if (local_data.schemaDefinition.findIndex(x => x.name==schema.name) === -1 ){
+        if (local_data.schemaDefinition.findIndex(x => x.name == schema.name) === -1) {
             local_data.schemaDefinition.push(schema);
         }
     });
@@ -74,10 +87,26 @@ export function saveBatchData(data: IServerData){
 
 }
 
-export function JSONToSYNCPackage(data: JSON){
-    
+export function JSONToSYNCPackage(data: JSON) {
+
+    // const payload = {
+    //     event: EventTypes.SYNC
+    //     payload: {  } as ISyncEventPayload
+
+    // } as IProtocolPayload
+
+    // // let sync_package = {
+    // //     protocol: NOMADDER_PROTOCOL,
+    // //     protocolInformation: ,
+    // //     hash: "",
+    // // } as INomadderEvent
+
+
+    // sync_package.protocol = NOMADDER_PROTOCOL
+
+
 }
 
-export function JSONStringToSYNCPackage(data: string){
-    
+export function JSONStringToSYNCPackage(data: string) {
+
 }
