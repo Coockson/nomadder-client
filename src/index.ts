@@ -29,23 +29,29 @@ export function connectToServer(serverURL?: string) {
 
     wsc = initializeSocket(serverURL);
 
-    var data = getLocalData();
+    const data = getLocalData();
+    let save_data :IServerData
+    let payload :ISyncEventPayload
+
     if (data === null) {
         console.log("No data initiated on client");
+        payload = {}
+    } else {
+        save_data = JSON.parse(data) as IServerData
+        payload = {data: save_data}
     }
+    
     const nommadder_sync: INomadderEvent = {
         protocol: NOMADDER_PROTOCOL,
         protocolInformation:
         {
             event: EventTypes.SYNC,
-            payload: {
-            }
+            payload
         },
         hash: "this is a hash"
     }
 
     wsc.onopen = () => wsc.send(JSON.stringify(nommadder_sync));
-
 }
 
 export function listenBatch() {
