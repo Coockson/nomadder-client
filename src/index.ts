@@ -41,6 +41,7 @@ export function connectToServer(serverURL?: string) {
         payload = {data: save_data}
     }
     
+    //TODO make it a real hash
     const nommadder_sync: INomadderEvent = {
         protocol: NOMADDER_PROTOCOL,
         protocolInformation:
@@ -69,8 +70,8 @@ export function listenBatch() {
             return;
         }
         if (msg.protocolInformation.event == EventTypes.BATCH) {
-            console.log("got here")
-            // saveBatchData(msg.protocolInformation.payload.data)
+             //@ts-ignore 
+            saveBatchData(msg.protocolInformation.payload.data)
         }
     });
 }
@@ -94,23 +95,6 @@ export function saveBatchData(data: IServerData) {
 }
 
 export function JSONToSYNCPackage(data: JSON) {
-
-    // const payload = {
-    //     event: EventTypes.SYNC
-    //     payload: {  } as ISyncEventPayload
-
-    // } as IProtocolPayload
-
-    // // let sync_package = {
-    // //     protocol: NOMADDER_PROTOCOL,
-    // //     protocolInformation: ,
-    // //     hash: "",
-    // // } as INomadderEvent
-
-
-    // sync_package.protocol = NOMADDER_PROTOCOL
-
-
 }
 
 export function JSONStringToSYNCPackage(data: string) {
