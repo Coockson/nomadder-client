@@ -58,6 +58,7 @@ export function listenBatch() {
     // Wait for batch protocol
     wsc.addEventListener("message", (message) => {
         console.log("hello")
+        console.log(message)
         // var msg: INomadderEvent = JSON.parse(message.data as unknown as string);
         // // Ensure right protocol
         // if (msg.protocol !== "NOMADDER") {
