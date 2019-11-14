@@ -3,6 +3,7 @@ import { INomadderEvent, EventTypes, NOMADDER_PROTOCOL } from "./models/nomadder
 import { IServerData } from "./models/server-data.model";
 import { IProtocolPayload } from './models/protocol-information.model';
 import { ISyncEventPayload } from './models/sync-event-payload.model';
+import { stringify } from "querystring";
 
 //Global vars
 let wsc: WebSocket;
@@ -58,8 +59,6 @@ export function connectToServer(serverURL?: string) {
 export function listenBatch() {
     // Wait for batch protocol
     wsc.addEventListener("message", (message :any) => {
-        console.log("hello")
-        console.log(message.data)
         let msg: INomadderEvent = JSON.parse(message.data) as INomadderEvent;
         // Ensure right protocol
         if (msg.protocol !== "NOMADDER") {
@@ -77,21 +76,31 @@ export function listenBatch() {
 }
 
 export function saveBatchData(data: IServerData) {
-    var local_storage = getLocalData();
-    var local_json = JSON.parse(<string>local_storage); //for now assuming there is data
+    // var local_storage = getLocalData();
+    // var local_json = JSON.parse(<string>local_storage); //for now assuming there is data
+
+    console.log(data)
+
+    //Remove old data.
+    localStorage.removeItem(nomadder_key); 
+
+    localStorage.setItem(nomadder_key, JSON.stringify(data))
+
     //var serverID = data.serverId; required when multi server is added
-    var local_data = local_json.protocolInformation.payload.data;
+    
+    
+    // let local_data = local_json.protocolInformation.payload.data;
     //console.log(local_data);
-    local_data.data.push(data.data);
-    data.schemaDefinition.forEach((schema) => { //add unique schema values
-        console.log(schema.name);
-        //@ts-ignore
-        if (local_data.schemaDefinition.findIndex(x => x.name == schema.name) === -1) {
-            local_data.schemaDefinition.push(schema);
-        }
-    });
-    localStorage.removeItem(nomadder_key);                          // delete old data  
-    localStorage.setItem(nomadder_key, JSON.stringify(local_data)); // add updated data
+    // local_data.data.push(data.data);
+    // data.schemaDefinition.forEach((schema) => { //add unique schema values
+    //     console.log(schema.name);
+    //     //@ts-ignore
+    //     if (local_data.schemaDefinition.findIndex(x => x.name == schema.name) === -1) {
+    //         local_data.schemaDefinition.push(schema);
+    //     }
+    // });
+    // localStorage.removeItem(nomadder_key);                          // delete old data  
+    // localStorage.setItem(nomadder_key, JSON.stringify(local_data)); // add updated data
 }
 
 export function JSONToSYNCPackage(data: JSON) {
