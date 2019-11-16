@@ -1,4 +1,3 @@
-//Imports
 import { INomadderEvent, EventTypes } from "./models/nomadder-event.model";
 import { IServerData } from "./models/server-data.model";
 
@@ -7,7 +6,7 @@ import { IServerData } from "./models/server-data.model";
 let wsc: WebSocket;
 const nomadder_key: string= "NOMADDER-DATA";
 
-export function initializeSocket(serverURL?: string){
+function initializeSocket(serverURL?: string){
     if (serverURL){
         //Setup connection with the server
         var ws = new WebSocket( serverURL );
@@ -19,7 +18,7 @@ export function initializeSocket(serverURL?: string){
     }    
 }
 
-export function getLocalData(){ 
+function getLocalData(){ 
     var data= localStorage.getItem(nomadder_key);
     return data
 }
@@ -74,10 +73,11 @@ export function saveBatchData(data: IServerData){
 
 }
 
-export function JSONToSYNCPackage(data: JSON){
+function JSONToSYNCPackage(data: JSON){
     
 }
 
-export function JSONStringToSYNCPackage(data: string){
+function JSONStringToSYNCPackage(data: string){
     
 }
+
