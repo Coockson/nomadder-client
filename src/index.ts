@@ -4,7 +4,7 @@ let ws: WebSocket;
 const NOMADDER_DATA: string= "NOMADDER-DATA";
 const IDENTITY_KEY = "NOMADDER-IDENTITY";
 
-function initializeSocket(){
+function initializeSocket(url: string){
     let location = window.location;
     let wsUri = null;
     if (location.protocol === "https:") {
@@ -12,7 +12,7 @@ function initializeSocket(){
     } else {
         wsUri = "ws:";
     }
-    wsUri += "//" + location.host;
+    wsUri += "//" + url ? url : location.host;
     return new WebSocket(wsUri);
 }
 
@@ -53,8 +53,8 @@ function setupEventListener(ws: WebSocket, initialized: () => void){
     });
 }
 
-export function initializeNomadderClient(initialized: () => void) {
-    ws = initializeSocket();
+export function initializeNomadderClient(url: string, initialized: () => void) {
+    ws = initializeSocket(url);
     setupEventListener(ws, initialized);
 }
 
