@@ -12,7 +12,8 @@ function initializeSocket(url: string){
     } else {
         wsUri = "ws:";
     }
-    wsUri += "//" + (url ? url : location.host);
+    let hostname = url ? url : location.host;
+    wsUri += "//" + hostname;
     return new WebSocket(wsUri);
 }
 
